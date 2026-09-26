@@ -1,1 +1,1 @@
-# Uruz7-AS.github.io aim gay
+# Uruz7-AS.github.io so gay
