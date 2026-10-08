@@ -144,18 +144,21 @@
             const yendoDerecha = dx === 1;
             const yendoIzquierda = dx === -1;
 
-            if (teclaPresionada === TECLA_IZQ && !yendoDerecha) {
-                dx = -1; dy = 0; juegoIniciado = true;
-            }
-            if (teclaPresionada === TECLA_ARRIBA && !yendoAbajo) {
-                dx = 0; dy = -1; juegoIniciado = true;
-            }
-            if (teclaPresionada === TECLA_DER && !yendoIzquierda) {
-                dx = 1; dy = 0; juegoIniciado = true;
-            }
-            if (teclaPresionada === TECLA_ABAJO && !yendoArriba) {
-                dx = 0; dy = 1; juegoIniciado = true;
-            }
+           if ((tecla === 'a' || tecla === 'arrowleft') && !yendoDerecha) {
+        dx = -1; dy = 0; juegoIniciado = true;
+    }
+    // Tecla 'w' o Flecha Arriba
+    if ((tecla === 'w' || tecla === 'arrowup') && !yendoAbajo) {
+        dx = 0; dy = -1; juegoIniciado = true;
+    }
+    // Tecla 'd' o Flecha Derecha
+    if ((tecla === 'd' || tecla === 'arrowright') && !yendoIzquierda) {
+        dx = 1; dy = 0; juegoIniciado = true;
+    }
+    // Tecla 's' o Flecha Abajo
+    if ((tecla === 's' || tecla === 'arrowdown') && !yendoArriba) {
+        dx = 0; dy = 1; juegoIniciado = true;
+    }
         }
 
         function generarComida() {
