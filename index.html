@@ -131,20 +131,17 @@
             }
         }
 
-        function cambiarDireccion(evento) {
-            const TECLA_IZQ = 37;
-            const TECLA_ARRIBA = 38;
-            const TECLA_DER = 39;
-            const TECLA_ABAJO = 40;
+       function cambiarDireccion(evento) {
+    // Detectamos la tecla presionada (soporta mayúsculas y minúsculas)
+    const tecla = evento.key.toLowerCase();
 
-            const teclaPresionada = evento.keyCode;
+    const yendoArriba = dy === -1;
+    const yendoAbajo = dy === 1;
+    const yendoDerecha = dx === 1;
+    const yendoIzquierda = dx === -1;
 
-            const yendoArriba = dy === -1;
-            const yendoAbajo = dy === 1;
-            const yendoDerecha = dx === 1;
-            const yendoIzquierda = dx === -1;
-
-           if ((tecla === 'a' || tecla === 'arrowleft') && !yendoDerecha) {
+    // Tecla 'a' o Flecha Izquierda
+    if ((tecla === 'a' || tecla === 'arrowleft') && !yendoDerecha) {
         dx = -1; dy = 0; juegoIniciado = true;
     }
     // Tecla 'w' o Flecha Arriba
@@ -159,7 +156,7 @@
     if ((tecla === 's' || tecla === 'arrowdown') && !yendoArriba) {
         dx = 0; dy = 1; juegoIniciado = true;
     }
-        }
+}
 
         function generarComida() {
             comida.x = Math.floor(Math.random() * totalCuadros);
