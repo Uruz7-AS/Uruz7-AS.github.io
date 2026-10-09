@@ -106,7 +106,7 @@
         imagenComida.onerror = () => alert("Error cargando comida.png. Asegúrate de que el archivo existe en tu repositorio.");
         // ---------------------------------
 
-        const tamanoCuadro = 20; // El tamaño lógico del cuadro sigue siendo 20x20 para el movimiento
+        const tamanoCuadro = 40; // El tamaño lógico del cuadro sigue siendo 20x20 para el movimiento
         const totalCuadros = canvas.width / tamanoCuadro;
 
         let serpiente = [{ x: 10, y: 10 }];
@@ -170,16 +170,6 @@
             tamanoCuadro
         );
     });
-}
-                } else {
-                    // Para el cuerpo, podemos usar un color fijo o la misma imagen
-                    // Aquí usamos un color para diferenciar, pero podrías usar otra imagen si quisieras
-                    ctx.fillStyle = "#45b08c";
-                    ctx.fillRect(segmento.x * tamanoCuadro, segmento.y * tamanoCuadro, tamanoCuadro - 2, tamanoCuadro - 2);
-                }
-            });
-        }
-        // -----------------------------------------------
 
         function moverSerpiente() {
             if (!juegoIniciado) return;
