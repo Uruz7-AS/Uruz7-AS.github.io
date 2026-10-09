@@ -29,7 +29,7 @@
         canvas {
             border: 4px solid #0f3460;
             background-color: #16213e;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
             /* Importante: Mantenemos el suavizado de imágenes desactivado para arte de píxeles */
             image-rendering: pixelated; 
         }
@@ -62,7 +62,7 @@
     <div class="puntuacion-container">Puntos: <span id="puntuacion">0</span> / 67</div>
     
     <!-- Mantenemos el tamaño del lienzo para que la lógica de juego no cambie -->
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <canvas id="gameCanvas" width="800" height="800"></canvas>
     
     <button onclick="reiniciarJuego()">Reiniciar / Iniciar</button>
     
@@ -159,18 +159,18 @@
         }
 
         // --- MODIFICADO: DIBUJAR SERPIENTE CON IMAGEN ---
-        function dibujarSerpiente() {
-            serpiente.forEach((segmento, indice) => {
-                if (indice === 0) {
-                    // Dibujamos la cabeza usando la imagen cargada
-                    // ctx.drawImage(imagen, x_píxel, y_píxel, ancho_píxel, alto_píxel)
-                    ctx.drawImage(
-                        imagenCabeza, 
-                        segmento.x * tamanoCuadro, 
-                        segmento.y * tamanoCuadro, 
-                        tamanoCuadro, // Usamos el tamaño del cuadro (20) para que ocupe todo el espacio lógico
-                        tamanoCuadro
-                    );
+      function dibujarSerpiente() {
+    serpiente.forEach((segmento) => {
+        // Dibujamos cada segmento (cabeza y cuerpo) con la misma imagen
+        ctx.drawImage(
+            imagenCabeza, 
+            segmento.x * tamanoCuadro, 
+            segmento.y * tamanoCuadro, 
+            tamanoCuadro, 
+            tamanoCuadro
+        );
+    });
+}
                 } else {
                     // Para el cuerpo, podemos usar un color fijo o la misma imagen
                     // Aquí usamos un color para diferenciar, pero podrías usar otra imagen si quisieras
