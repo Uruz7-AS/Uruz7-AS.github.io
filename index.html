@@ -74,11 +74,19 @@
         const ctx = canvas.getContext("2d");
         const puntuacionElemento = document.getElementById("puntuacion");
 
+        // --- CARGA DE AUDIOS ---
+        const sonidoComer = new Audio('comer.mp3');
+        const sonidoVictoria = new Audio('victoria.mp3');
+        const musicaFondo = new Audio('musica.mp3');
+        
+        // La música se repetirá en bucle mientras dure la partida
+        musicaFondo.loop = true;
+        musicaFondo.volume = 0.5; // Volumen al 50% para no opacar los efectos
+
         // --- CARGA DE IMÁGENES ---
         const imagenCabeza = new Image();
         const imagenComida = new Image();
 
-        // Nombres de tus archivos de imagen
         imagenCabeza.src = 'cabeza_serpiente.png'; 
         imagenComida.src = 'comida.png';
 
@@ -99,7 +107,7 @@
         imagenComida.onerror = () => alert("Error al cargar comida.png. Verifica que esté subido a tu repositorio.");
 
         // --- CONFIGURACIÓN DEL TAMAÑO DE BLOQUES ---
-        const tamanoCuadro = 30; // Tamaño de cada bloque en píxeles (aumentado)
+        const tamanoCuadro = 30; 
         const totalCuadros = canvas.width / tamanoCuadro;
 
         let serpiente = [{ x: 5, y: 5 }];
@@ -118,16 +126,34 @@
         }
 
         function dibujarJuego() {
-            // Condición de victoria (67 puntos)
+            moverSerpiente();
+
+            // Condición de victoria (67 puntos exactos)
             if (puntuacion >= 67) {
-                alert("¡Felicidades! 🎉 Has alcanzado los 67 puntos y ganado el juego.");
-                reiniciarJuego();
+                puntuacionElemento.textContent = 67; // Asegura visualmente 67/67
+                limpiarLienzo();
+                dibujarComida();
+                dibujarSerpiente();
+                
+                // Pausar la música de fondo y reproducir audio de victoria
+                musicaFondo.pause();
+                musicaFondo.currentTime = 0;
+
+                sonidoVictoria.currentTime = 0;
+                sonidoVictoria.play().catch(e => console.log("Audio bloqueado por navegador:", e));
+
+                setTimeout(() => {
+                    alert("¡Felicidades! 🎉 Has alcanzado los 67 puntos y ganado el juego.");
+                    reiniciarJuego();
+                }, 50);
                 return;
             }
 
-            moverSerpiente();
-
             if (comprobarColision()) {
+                // Detener la música si pierde
+                musicaFondo.pause();
+                musicaFondo.currentTime = 0;
+
                 alert("¡Juego terminado! Puntuación final: " + puntuacion);
                 reiniciarJuego();
                 return;
@@ -150,7 +176,6 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // --- DIBUJAR TODAS LAS PARTES DE LA SERPIENTE CON LA IMAGEN ---
         function dibujarSerpiente() {
             serpiente.forEach((segmento) => {
                 ctx.drawImage(
@@ -170,15 +195,21 @@
             serpiente.unshift(cabeza);
 
             if (cabeza.x === comida.x && cabeza.y === comida.y) {
-                puntuacion += 5; // Cada comida da 5 puntos
-                puntuacionElemento.textContent = puntuacion;
+                puntuacion += 5; // Suma 5 puntos
+                
+                // Limitar la puntuación mostrada a 67 máximo
+                puntuacionElemento.textContent = Math.min(puntuacion, 67);
+
+                // Reproducir sonido al comer
+                sonidoComer.currentTime = 0; 
+                sonidoComer.play().catch(e => console.log("Audio bloqueado por navegador:", e));
+
                 generarComida();
             } else {
                 serpiente.pop();
             }
         }
 
-        // --- CONTROLES WASD Y FLECHAS ---
         function cambiarDireccion(evento) {
             const tecla = evento.key.toLowerCase();
 
@@ -187,17 +218,26 @@
             const yendoDerecha = dx === 1;
             const yendoIzquierda = dx === -1;
 
+            let seMovio = false;
+
             if ((tecla === 'a' || tecla === 'arrowleft') && !yendoDerecha) {
-                dx = -1; dy = 0; juegoIniciado = true;
+                dx = -1; dy = 0; seMovio = true;
             }
             if ((tecla === 'w' || tecla === 'arrowup') && !yendoAbajo) {
-                dx = 0; dy = -1; juegoIniciado = true;
+                dx = 0; dy = -1; seMovio = true;
             }
             if ((tecla === 'd' || tecla === 'arrowright') && !yendoIzquierda) {
-                dx = 1; dy = 0; juegoIniciado = true;
+                dx = 1; dy = 0; seMovio = true;
             }
             if ((tecla === 's' || tecla === 'arrowdown') && !yendoArriba) {
-                dx = 0; dy = 1; juegoIniciado = true;
+                dx = 0; dy = 1; seMovio = true;
+            }
+
+            // Iniciar música e interacción en el primer movimiento
+            if (seMovio && !juegoIniciado) {
+                juegoIniciado = true;
+                musicaFondo.currentTime = 0;
+                musicaFondo.play().catch(e => console.log("Audio de fondo bloqueado por navegador:", e));
             }
         }
 
@@ -212,7 +252,6 @@
             });
         }
 
-        // --- DIBUJAR COMIDA CON LA IMAGEN ---
         function dibujarComida() {
             ctx.drawImage(
                 imagenComida, 
@@ -241,12 +280,16 @@
         function reiniciarJuego() {
             if (imagenesCargadas < totalImagenes) return; 
 
+            // Detener y reiniciar música de fondo al reiniciar el juego
+            musicaFondo.pause();
+            musicaFondo.currentTime = 0;
+
             serpiente = [{ x: 5, y: 5 }];
             dx = 0;
             dy = 0;
             puntuacion = 0;
             juegoIniciado = false;
-            puntuacionElemento.textContent = puntuacion;
+            puntuacionElemento.textContent = 0;
             generarComida();
             iniciarBucle();
         }
