@@ -6,8 +6,8 @@
     <title>MIKUvTETO</title>
     <style>
         body {
-           background-color: ##101B45;
-            color: ##16255F;
+           background-color: #101B45;
+            color: #16255F;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -63,10 +63,10 @@
     
     <canvas id="gameCanvas" width="450" height="450"></canvas>
     
-    <button onclick="reiniciarJuego()">Reiniciar / Iniciar</button>
+    <button onclick="reiniciarJuego()">Reiniciar</button>
     
     <div class="instrucciones">
-        Usa <strong>WASD</strong> o las <strong>Flechas</strong> para mover la serpiente.
+        Usa <strong>WASD</strong> o las <strong>Flechas</strong> para mover a Ing.Hatsune Miku.
     </div>
 
     <script>
@@ -122,7 +122,7 @@
 
         function iniciarBucle() {
             if (bucleJuego) clearInterval(bucleJuego);
-            bucleJuego = setInterval(dibujarJuego, 150);
+            bucleJuego = setInterval(dibujarJuego, 125);
         }
 
         function dibujarJuego() {
@@ -143,7 +143,7 @@
                 sonidoVictoria.play().catch(e => console.log("Audio bloqueado por navegador:", e));
 
                 setTimeout(() => {
-                    alert("¡Felicidades! 🎉 Has alcanzado los 67 puntos y ganado el juego.");
+                    alert("¡Felicidades! 🎉 Has alcanzado los 67 points y Teto se ah suicidado💀.");
                     reiniciarJuego();
                 }, 50);
                 return;
@@ -154,7 +154,7 @@
                 musicaFondo.pause();
                 musicaFondo.currentTime = 0;
 
-                alert("¡Juego terminado! Puntuación final: " + puntuacion);
+                alert("¡NOOB! Puntuación: " + puntuacion);
                 reiniciarJuego();
                 return;
             }
