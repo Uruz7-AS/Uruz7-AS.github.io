@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego Snake con Imágenes - GitHub Pages</title>
+    <title>Juego Snake - GitHub Pages</title>
     <style>
         body {
             background-color: #1a1a2e;
@@ -29,8 +29,8 @@
         canvas {
             border: 4px solid #0f3460;
             background-color: #16213e;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            /* Importante: Mantenemos el suavizado de imágenes desactivado para arte de píxeles */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            /* Mantiene el pixel art nítido al agrandar las imágenes */
             image-rendering: pixelated; 
         }
 
@@ -58,16 +58,15 @@
 </head>
 <body>
 
-    <h1>Juego de Snake 🐍 (con Imágenes)</h1>
+    <h1>Juego de Snake 🐍</h1>
     <div class="puntuacion-container">Puntos: <span id="puntuacion">0</span> / 67</div>
     
-    <!-- Mantenemos el tamaño del lienzo para que la lógica de juego no cambie -->
-    <canvas id="gameCanvas" width="800" height="800"></canvas>
+    <canvas id="gameCanvas" width="450" height="450"></canvas>
     
     <button onclick="reiniciarJuego()">Reiniciar / Iniciar</button>
     
     <div class="instrucciones">
-        Usa <strong>WASD</strong> o las flechas para mover la serpiente.
+        Usa <strong>WASD</strong> o las <strong>Flechas</strong> para mover la serpiente.
     </div>
 
     <script>
@@ -75,42 +74,36 @@
         const ctx = canvas.getContext("2d");
         const puntuacionElemento = document.getElementById("puntuacion");
 
-        // --- NUEVO: CARGA DE IMÁGENES ---
-        // 1. Creamos los objetos de imagen
+        // --- CARGA DE IMÁGENES ---
         const imagenCabeza = new Image();
         const imagenComida = new Image();
 
-        // 2. Asignamos las rutas (asegúrate de que los nombres coincidan con tus archivos en GitHub)
+        // Nombres de tus archivos de imagen
         imagenCabeza.src = 'cabeza_serpiente.png'; 
         imagenComida.src = 'comida.png';
 
-        // Variable para rastrear si las imágenes se han cargado
         let imagenesCargadas = 0;
         const totalImagenes = 2;
 
-        // Función que se ejecuta cuando una imagen se carga correctamente
         function imagenCargada() {
             imagenesCargadas++;
-            // Solo iniciamos el bucle si todas las imágenes están listas
             if (imagenesCargadas === totalImagenes) {
                 reiniciarJuego(); 
             }
         }
 
-        // Asignamos el evento de carga a cada imagen
         imagenCabeza.onload = imagenCargada;
         imagenComida.onload = imagenCargada;
 
-        // Si hay un error cargando las imágenes, mostramos un aviso
-        imagenCabeza.onerror = () => alert("Error cargando cabeza_serpiente.png. Asegúrate de que el archivo existe en tu repositorio.");
-        imagenComida.onerror = () => alert("Error cargando comida.png. Asegúrate de que el archivo existe en tu repositorio.");
-        // ---------------------------------
+        imagenCabeza.onerror = () => alert("Error al cargar cabeza_serpiente.png. Verifica que esté subido a tu repositorio.");
+        imagenComida.onerror = () => alert("Error al cargar comida.png. Verifica que esté subido a tu repositorio.");
 
-        const tamanoCuadro = 40; // El tamaño lógico del cuadro sigue siendo 20x20 para el movimiento
+        // --- CONFIGURACIÓN DEL TAMAÑO DE BLOQUES ---
+        const tamanoCuadro = 30; // Tamaño de cada bloque en píxeles (aumentado)
         const totalCuadros = canvas.width / tamanoCuadro;
 
-        let serpiente = [{ x: 10, y: 10 }];
-        let comida = { x: 15, y: 15 };
+        let serpiente = [{ x: 5, y: 5 }];
+        let comida = { x: 10, y: 10 };
         let dx = 0;
         let dy = 0;
         let puntuacion = 0;
@@ -125,7 +118,7 @@
         }
 
         function dibujarJuego() {
-            // Verificación de condición de victoria
+            // Condición de victoria (67 puntos)
             if (puntuacion >= 67) {
                 alert("¡Felicidades! 🎉 Has alcanzado los 67 puntos y ganado el juego.");
                 reiniciarJuego();
@@ -144,7 +137,6 @@
             dibujarComida();
             dibujarSerpiente();
 
-            // Mostrar aviso en el lienzo antes de presionar una tecla
             if (!juegoIniciado && imagenesCargadas === totalImagenes) {
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "16px Arial";
@@ -158,18 +150,18 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // --- MODIFICADO: DIBUJAR SERPIENTE CON IMAGEN ---
-      function dibujarSerpiente() {
-    serpiente.forEach((segmento) => {
-        // Dibujamos cada segmento (cabeza y cuerpo) con la misma imagen
-        ctx.drawImage(
-            imagenCabeza, 
-            segmento.x * tamanoCuadro, 
-            segmento.y * tamanoCuadro, 
-            tamanoCuadro, 
-            tamanoCuadro
-        );
-    });
+        // --- DIBUJAR TODAS LAS PARTES DE LA SERPIENTE CON LA IMAGEN ---
+        function dibujarSerpiente() {
+            serpiente.forEach((segmento) => {
+                ctx.drawImage(
+                    imagenCabeza, 
+                    segmento.x * tamanoCuadro, 
+                    segmento.y * tamanoCuadro, 
+                    tamanoCuadro, 
+                    tamanoCuadro
+                );
+            });
+        }
 
         function moverSerpiente() {
             if (!juegoIniciado) return;
@@ -178,7 +170,7 @@
             serpiente.unshift(cabeza);
 
             if (cabeza.x === comida.x && cabeza.y === comida.y) {
-                puntuacion += 5; // Cada comida otorga 5 puntos
+                puntuacion += 5; // Cada comida da 5 puntos
                 puntuacionElemento.textContent = puntuacion;
                 generarComida();
             } else {
@@ -186,6 +178,7 @@
             }
         }
 
+        // --- CONTROLES WASD Y FLECHAS ---
         function cambiarDireccion(evento) {
             const tecla = evento.key.toLowerCase();
 
@@ -219,18 +212,16 @@
             });
         }
 
-        // --- MODIFICADO: DIBUJAR COMIDA CON IMAGEN ---
+        // --- DIBUJAR COMIDA CON LA IMAGEN ---
         function dibujarComida() {
-            // Dibujamos la comida usando la imagen cargada
             ctx.drawImage(
                 imagenComida, 
                 comida.x * tamanoCuadro, 
                 comida.y * tamanoCuadro, 
-                tamanoCuadro, // Usamos el tamaño del cuadro (20)
+                tamanoCuadro, 
                 tamanoCuadro
             );
         }
-        // ----------------------------------------------
 
         function comprobarColision() {
             const cabeza = serpiente[0];
@@ -248,10 +239,9 @@
         }
 
         function reiniciarJuego() {
-            // Solo reiniciar si las imágenes están cargadas
             if (imagenesCargadas < totalImagenes) return; 
 
-            serpiente = [{ x: 10, y: 10 }];
+            serpiente = [{ x: 5, y: 5 }];
             dx = 0;
             dy = 0;
             puntuacion = 0;
@@ -260,10 +250,6 @@
             generarComida();
             iniciarBucle();
         }
-
-        // Comentamos la llamada directa aquí, ahora reiniciarJuego() se llama 
-        // automáticamente cuando las imágenes terminan de cargarse.
-        // reiniciarJuego(); 
     </script>
 </body>
 </html>
